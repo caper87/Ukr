@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: Ukr
+        psr4_prefix: Ukr
+        src_path: app
