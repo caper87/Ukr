@@ -15,7 +15,7 @@ Route::get('/', 'HomeController@index');
 Route::get('w', function(){
 		return view('welcome');
 	});
-//Route::get('home', 'HomeController@index');
+
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',
@@ -26,7 +26,7 @@ Route::controllers([
 Route::any('posts',['as' => 'posts','uses' => 'PostController@index']);
 Route::resource('posts', 'PostController');
 
-//Route::get('subcat','Admin\SubCatController@getSubCatAjax'); 
+ 
 // admin
 Route::group(array( 'prefix'   	  => '/admin',
                     'namespace'   => 'Admin',
@@ -53,8 +53,9 @@ Route::group(array( 'prefix'   	  => '/admin',
                                             
                                              
         //tags
+       
         Route::any('tagadd', 'TagController@addTagAjax');
-        Route::any('tagdel', 'TagController@delTagAjax');
+        Route::get('tagdel', 'TagController@delTagAjax');
         Route::any('tag',['as' => 'admin.tag.index','uses' => 'TagController@index']);
         Route::resource('tag', 'TagController');
         Route::get('tag/{id}/delete', array('as'   => 'admin.tag.delete',
@@ -70,8 +71,7 @@ Route::group(array( 'prefix'   	  => '/admin',
         Route::any('subcat', 'SubCatController@getSubCatAjax');
         Route::any('subcat/add', 'SubCatController@addSubCatAjax');
         Route::any('subcat/del', 'SubCatController@delSubCatAjax');
-        //Route::get('subcat/{id}/delete', array('as'   => 'admin.subcat.delete', 'uses' => 'SubCatController@destroy'));
-        //Route::resource('subcat', 'SubCatController');                                          
+                                          
   
 });
 

@@ -24,26 +24,20 @@ class SubCatController extends Controller
 		
 		$action = Input::get('action');
 		$cat_id = Input::get('cat');
-		//$cat = $cat->where('cat_id',$categ )->get();
 		if (isset($action) && $action == 'getSubCat'){ // проверка параметров
 		    if (isset($cat_id)) {// если ключ найден
 		    	$subcat = SubCat::getSubCat($cat_id);
 		        return json_encode($subcat); // возвращаем массив с данными
-		    }else{ // иначе
-		    	
-		        return json_encode(array('Выберите категорию'));
-		    	
+		    }else{
+		        return json_encode(array('Выберите категорию'));	
 			}
 		}
 	}
 	
 	public function addSubCatAjax(Request $request)
-	{
-		
+	{		
 		$this->subcat->create($request->all());
-
-		$subcat = SubCat::max('sub_cat_id');
-		
+		$subcat = SubCat::max('sub_cat_id');	
 		return $subcat;
 	}
 	
@@ -62,7 +56,6 @@ class SubCatController extends Controller
     public function destroy($id)
     {
         $this->subcat->where('sub_cat_id',$id)->delete();
-		//Session::flash('message', 'Successfully deleted the nerd!');
 		return redirect()->route('admin.cat.index');
     }
 }

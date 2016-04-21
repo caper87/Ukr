@@ -149,7 +149,6 @@ return [
 		'Barryvdh\Debugbar\ServiceProvider',
 		'Collective\Html\HtmlServiceProvider',
 		'Laracasts\Flash\FlashServiceProvider',
-		//'Codesleeve\LaravelStapler\Providers\L4ServiceProvider',
 		'Intervention\Image\ImageServiceProvider',
 
 	],

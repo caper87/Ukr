@@ -4,31 +4,39 @@ use Illuminate\Http\Request;
 use Ukr\Http\Requests;
 use Ukr\Http\Controllers\Controller;
 use Ukr\Models\Post;
-use DB;
-use Session;
+use Ukr\Models\Post_Tag;
 use Ukr\Models\Tag;
 use Ukr\Models\Cat;
 use Ukr\Models\SubCat;
 use Input;
 use File;
 use Flash;
+use DB;
+use Session;
+
 class PostController extends Controller
 {
+	protected $post;
+	
+	public function __construct(Post $post) {
+
+        $this->post = $post;
+       
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Post $postModel)
+    public function index()
 	{	
-		$posts = $postModel->all();
-		
+		$posts = $this->post->all();
 		return view('admin.posts.index',['posts' => $posts]);
 	}
 	
-	public function show($id,Post $postModel)
+	public function show($id)
 	{
-		$post = $postModel->query()->where('id','=',$id)->get();
+		$post = $this->post->query()->where('id','=',$id)->get();
 		return view('admin.posts.show',['post' => $post]);
 	}
 	
@@ -39,9 +47,10 @@ class PostController extends Controller
 	 */
 	public function create(Tag $tag,Cat $cat)
 	{	
-		$tag_list = Tag::allTag();
+		//$tag_list = Tag::allTag();
+		$post_id = $this->post->max('id')+1;
     	$cat_list = Cat::allCat();		
-        return view('admin.posts.create',['tags' => $tag_list,'cats' => $cat_list]);
+        return view('admin.posts.create',['cats' => $cat_list,'post_id' => $post_id]);
 	}
 
 	/**
@@ -49,7 +58,7 @@ class PostController extends Controller
 	 *
 	 * @return Response
 	 */
-	public function store(Post $postModel, Request $request)
+	public function store(Request $request)
 	{
 		//валидация форм
 		$this->validate($request, [
@@ -57,22 +66,20 @@ class PostController extends Controller
 	        'content' => 'required',
     	]);
     	
+    	
     	//загрузка фото       
         if(Input::hasFile('img')){
 		   //если фото есть
 		   $request->file('img')->move('image/uploads'.'/'.date('Y-m-d').'/', $request->file('img')->getClientOriginalName()); 
-        
 	       $data  = $request->except(['img']);
- 
  	       $data['img'] = 'image/uploads'.'/'.date('Y-m-d').'/'.$request->file('img')->getClientOriginalName(); 
-
-	       $postModel->create($data);
+	       $this->post->create($data);
 	       Flash::message('Рецепт успешно добавлен!');
 	       return redirect()->route('admin.posts.index');
 	       
 		}else{
 			//если фото нет
-			 $postModel->create($request->all());
+			 $this->post->create($request->all());
 			 Flash::message('Рецепт успешно добавлен!');
 			 return redirect()->route('admin.posts.index');
 		}
@@ -86,12 +93,12 @@ class PostController extends Controller
 	 * @return Response
 	 */
 	 
-	public function edit($id,Post $postModel,Tag $tag,Cat $cat,SubCat $subcat)
+	public function edit($id,Tag $tag,Cat $cat,SubCat $subcat)
 	{
-		$tag_list = Tag::allTag();
+		$tag_list = $this->post->find($id)->tag; 
 		$cat_list = Cat::allCat();
 		//$cat_list = Post::find($id)->cat;
-		$post = $postModel->query()->where('id','=',$id)->get();
+		$post = $this->post->query()->where('id','=',$id)->get();
 		foreach($post as $val){
 			$subcat_list = SubCat::getSubCat($val->cat_id);
 		}
@@ -104,15 +111,15 @@ class PostController extends Controller
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id,Post $postModel,Request $request)
+	public function update($id,Request $request)
 	{
 		if(Input::hasFile('img')){
 			
 		   //если фото есть
 		   $request->file('img')->move('image/uploads'.'/'.date('Y-m-d').'/', $request->file('img')->getClientOriginalName());        
-	       $data  = $request->except(['img','_token','_method']); 
+	       $data  = $request->except(['img','_token','_method','tag_name','post_id']); 
  	       $data['img'] = 'image/uploads'.'/'.date('Y-m-d').'/'.$request->file('img')->getClientOriginalName();
-	       $postModel->where('id',$id)->update($data);
+	       $this->post->where('id',$id)->update($data);
 	       Flash::message('Изменения сохранены!');
 	       return redirect()->route('admin.posts.index');
 	       
@@ -120,7 +127,7 @@ class PostController extends Controller
 			
 			//если фото не загружали
 			Flash::message('Изменения сохранены!');
-			$postModel->where('id',$id)->update($request->except('_token','_method','img'));
+			$this->post->where('id',$id)->update($request->except('_token','_method','img','tag_name','post_id'));
 			return redirect()->route('admin.posts.index');
 			
 		}
@@ -132,25 +139,21 @@ class PostController extends Controller
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id,Post $postModel)
+	public function destroy($id)
 	{
-		$postModel->where('id',$id)->delete();
-		//Session::flash('message', 'Successfully deleted the nerd!');
-		//return redirect('admin/posts/index');
+		$this->post->where('id',$id)->delete();
 		return redirect()->route('admin.posts.index');
 	}
     
-    public function published(Post $postModel)
+    public function published()
 	{	
-		$posts = $postModel->getPublishedPosts();
-		
+		$posts = $this->post->getPublishedPosts();	
 		return view('admin.posts.index',['posts' => $posts]);
 	}
 	
-	public function unpublished(Post $postModel)
+	public function unpublished()
 	{	
-		$posts = $postModel->getUnPublishedPosts();
-		
+		$posts = $this->post->getUnPublishedPosts();		
 		return view('admin.posts.index',['posts' => $posts]);
 	}
 	

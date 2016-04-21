@@ -4,8 +4,10 @@ namespace Ukr\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Ukr\Models\Tag;
+use Ukr\Models\Post;
 use Ukr\Http\Requests;
 use Ukr\Http\Controllers\Controller;
+use Input;
 
 class TagController extends Controller
 {
@@ -27,7 +29,6 @@ class TagController extends Controller
     public function index()
     {
         $tag = $this->tag->all();
-		
 		return view('admin.tag.index',['tags' => $tag]);
     }
 
@@ -62,15 +63,16 @@ class TagController extends Controller
     public function destroy($id,Tag $tagModel)
     {
         $tagModel->where('tag_id',$id)->delete();
-		//Session::flash('message', 'Successfully deleted the nerd!');
 		return redirect()->route('admin.tag.index');
     }
     
-     public function addTagAjax(Request $request){
-     	
+    public function addTagAjax(Request $request){
+		//сохраняем тег и берем максимальное значение tag_id для передачи обратно
 		$this->tag->create($request->all());
-
 		$tag = $this->tag->max('tag_id');
+		//добавляем связь в таблицу
+		$post_tag = $this->tag->find($tag);
+		$post_tag->post()->attach($request->post_id); 
 		
 		return $tag;
 	}

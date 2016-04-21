@@ -25,7 +25,6 @@ class CatController extends Controller
     public function index()
     {
          $cat = $this->cat->all();
-		
 		return view('admin.cat.index',['cats' => $cat]);
     }
 
@@ -72,9 +71,6 @@ class CatController extends Controller
     public function edit($id)
     { 
     	$cat = $this->cat->query()->where('cat_id','=',$id)->get();
-		//$cat = $this->cat->query()->where('cat_id','=',$id)->get();
-		
-		//$subcat_list = $cat->subcat->toArray();
 		$subcat_list = SubCat::getSubCat($id,1);
 		return view('admin.cat.edit',['cat' => $cat,'subcat' => $subcat_list]);
     }
@@ -101,7 +97,6 @@ class CatController extends Controller
     public function destroy($id)
     {
         $this->cat->where('cat_id',$id)->delete();
-		//Session::flash('message', 'Successfully deleted the nerd!');
 		return redirect()->route('admin.cat.index');
     }
 }

@@ -19,7 +19,8 @@
 						</ul>
 					</div>
 				@endif
-				<div class="panel-heading">Posts</div>
+				<div class="panel-heading">Posts
+				@include('flash::message')</div>
 				@include('layout.admin_menu')
 				<div class="panel-body admin_content col-md-9">
 					
@@ -28,10 +29,11 @@
 					<div class="form-group">
 					{!! Form::label('Заголовок') !!}
 					{!! Form::text('title',null,['class' => 'form-control']) !!}
+					{!! Form::hidden('post_id', $post_id) !!}
 					</div>
 					<div class="form-group">
 						{!! Form::label('Теги') !!}
-						{!! Form::hidden('tag_id',12) !!}
+						
 						{!! Form::text('tag_name',null,['class' => 'form-control','id'=>'tag_name']) !!}
 					</div>
 						

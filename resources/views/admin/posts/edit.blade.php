@@ -26,7 +26,7 @@
 					@foreach($post as $val)
 						{!! Form::open(['route' => ['admin.posts.update',$val->id],'files' => true,'method' => 'POST']) !!} 
 						{!! Form::input('hidden', '_method','PUT' ) !!}
-
+						{!! Form::hidden('post_id', $val->id) !!}
 					<div class="form-group">
 						{!! Form::label('Заголовок') !!}
 						{!! Form::text('title', $val->title,['class' => 'form-control']) !!}
@@ -35,23 +35,33 @@
 					
 					<div class="form-group">
 						{!! Form::label('Теги') !!}
-						{!! Form::hidden('cat_id', $val->cat_id) !!}
-						{!! Form::text('sub_cat_name',null,['class' => 'form-control','id'=>'sub_cat_name']) !!}
+						
+						{!! Form::text('tag_name',null,['class' => 'form-control','id'=>'tag_name']) !!}
 					</div>
 						
 					<div class="form-group">
-						{!! Form::button('Добавить', ['class' => 'form-submit','id'=>'subcatAdd']) !!}
+						{!! Form::button('Добавить', ['class' => 'form-submit','id'=>'tagAdd']) !!}
 					</div>
 					
-					
-					<div class="form-group">
-						{!! Form::label('Теги') !!}
-						{!! Form::select('tag_id',$tags,$val->tag_id,['class' => 'form-control']) !!}
+					<div class="tag_list">
+					@foreach($tags as $val2)
+						<span id="row_{{$val2->tag_id}}" class="tag_row">
+							<span >{{ $val2->tag_name }}</span>
+
+			                    {!! Form::button('x', array(
+			                    	'class' => 'btn btn-warning del_tag_button',
+			                    	'onclick' => 'return ConfirmDelete()',
+			                    	'id'=>$val2->tag_id,
+			                    )) !!}
+			             </span>   
+					@endforeach
 					</div>
+					
 					<div class="form-group">
 						{!! Form::label('Аннотация') !!}
 						{!! Form::textarea('intro', $val->intro,['class' => 'form-control']) !!}
 					</div>
+					
 					<div class="form-group">
 						{!! Form::label('Содержимое') !!}
 						{!! Form::textarea('content', $val->content,['class' => 'form-control','id'=>'editor']) !!}

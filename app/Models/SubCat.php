@@ -7,6 +7,7 @@ use DB;
 class SubCat extends Model
 {
     protected $table = 'sub_cat';
+    protected $primaryKey = 'sub_cat_id';
 	protected $fillable = [
 		'sub_cat_id',
 		'sub_cat_name',
@@ -23,7 +24,7 @@ class SubCat extends Model
 			$subcat_list = [];
 			$subcats = DB::table('sub_cat')->where('cat_id', $cat_id)->latest()->get();
 	    	foreach($subcats as $v){
-				$subcat_list[] = $v->sub_cat_name;
+				$subcat_list[$v->sub_cat_id] = $v->sub_cat_name;
 			}
 			return $subcat_list;
 			

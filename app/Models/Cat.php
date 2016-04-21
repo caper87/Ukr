@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Cat extends Model
 {
     protected $table = 'cat';
+    protected $primaryKey = 'cat_id';
 	protected $fillable = [
-		//'cat_id',
 		'cat_name',
 		'cat_descr',
 	];
@@ -19,9 +19,9 @@ class Cat extends Model
 	static public function allCat(){
 		$cat_list = [];
 		$cat_list[] = 'Выберите категорию';
-		$cats = DB::table('cat')->select('cat_name')->get();
+		$cats = DB::table('cat')->select('cat_id','cat_name')->get();
     	foreach($cats as $v){
-			$cat_list[] = $v->cat_name;
+			$cat_list[$v->cat_id] = $v->cat_name;
 		}
 		return $cat_list;
 	}

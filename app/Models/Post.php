@@ -7,7 +7,6 @@ use Carbon\Carbon;
 class Post extends Model {
 	
 	protected $table = 'posts';
-	//protected $guarded = ['img'];﻿
 	protected $fillable = [
 		'id',
 		'tag',
@@ -30,15 +29,11 @@ class Post extends Model {
 		return $this->hasMany('Ukr\Models\Cat','cat_id');
 	}
 	
+	public function tag(){
+		return $this->belongsToMany('Ukr\Models\Tag');
+	}
+	
 	public function getPublishedPosts(){
-		//$posts = Post::all(); //вывод всех,  get() - команда к получению
-		//$posts = Post::latest('id')->get();  //вывод с сорт. по id
-		//$posts = Post::latest('published_at')->get();  // вывод по дате публикации
-		/*$posts = Post::latest('published_at') // вывод всего, что больше или равно текущей дате(отложенная публикация) 
-			->where('published_at', '<=',Carbon::now())
-			->get();
-		*/
-		
 		$posts = $this->latest('created_at')->published()->get();
 		return $posts;
 	}

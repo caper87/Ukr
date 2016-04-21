@@ -37,6 +37,7 @@
 	
 	
 	<script>
+	// добавление и удаление подкатегорий аяксом
 	$(document).ready(function() {
 		$("#subcatAdd").click(function (e) {
 			
@@ -53,7 +54,6 @@
 	        $.ajax({
 	            type: "GET", // HTTP метод  POST или GET
 	            url: "/admin/subcat/add", //url-адрес, по которому будет отправлен запрос
-	            //dataType:"text", // Тип данных,  которые пришлет сервер в ответ на запрос ,например, HTML, json
 	            data: myData, //данные, которые будут отправлены на сервер (post переменные)
 	            success:function(response){
 	        
@@ -67,14 +67,10 @@
 	        });
 	    });
 	    
-	    //Удаляем запись при клике по крестику
+	    //Удаляем запись при клике по кнопке
 	  $("body").on("click", ".del_button", function(e) {
-	   		//alert("ошиббка!");
 	        e.preventDefault();
-	        //var clickedID = this.id;
-        	//var DbNumberID = clickedID[1]; //и получаем номер из массива
-        	var myData = 'sub_cat_id='+ this.id; //выстраиваем  данные для POST
-	        //var myData = {"sub_cat_id" : $('input[name=sub_cat_id]').val(),  "_method":$('input[name=_method]').val()}; 
+        	var myData = 'sub_cat_id='+ this.id; //выстраиваем  данные для POST 
  			$('#row_'+ this.id).fadeOut("slow");
  			
 	        $.ajax({
@@ -83,8 +79,6 @@
 	            //dataType:"text", // Тип данных
 	            data:myData, //post переменные
 	            success:function(response){
-	            // в случае успеха, скрываем, выбранный пользователем для удаления, элемент
-	            //$('#row_'+ this.id).fadeOut("slow");
 	            },
 	            error:function (xhr, ajaxOptions, thrownError){
 	                //выводим ошибку
@@ -95,28 +89,24 @@
 	});
 </script>
 <script>
+// добавление и удаление подкатегорий аяксом
 	$(document).ready(function() {
 		$("#tagAdd").click(function (e) {
-			
 	        e.preventDefault();
-			
 	        if($("#tag_name").val()==="") //simple validation
 	        {
 	            alert("Введите текст!");
 	            return false;
 	        }
-			
-	        var myData = {"tag_name" : $('input[name=tag_name]').val()};  //post variables ,  "tag_id":$('input[name=tag_id]').val()
-
+	        var myData = {"tag_name" : $('input[name=tag_name]').val(),"post_id":$('input[name=post_id]').val()};  
 	        $.ajax({
 	            type: "GET", // HTTP метод  POST или GET
 	            url: "/admin/tagadd", //url-адрес, по которому будет отправлен запрос
-	            //dataType:"text", // Тип данных,  которые пришлет сервер в ответ на запрос ,например, HTML, json
 	            data: myData, //данные, которые будут отправлены на сервер (post переменные)
 	            success:function(response){
 	        
 	            $(".tag_list").prepend(
-	            	'<span id="row_'+response+'">'+$("#tag_name").val()+'<button class="btn btn-warning del_button" id="'+response+'" type="button">x</button></span>');
+	            	'<span class="tag_row" id="row_'+response+'"><span>'+$("#tag_name").val()+'</span><button class="btn btn-warning del_tag_button" id="'+response+'" type="button">x</button></span>');
 	            $("#tag_name").val(''); //очищаем текстовое поле после успешной вставки
 	            },
 	            error:function (xhr, ajaxOptions, thrownError){
@@ -125,35 +115,26 @@
 	        });
 	    });
 	    
-	    //Удаляем запись при клике по крестику
-	  $("body").on("click", ".del_button", function(e) {
-	   		//alert("ошиббка!");
+	    //Удаляем запись при клике по кнопке
+	  $("body").on("click", ".del_tag_button", function(e) {
 	        e.preventDefault();
-	        //var clickedID = this.id;
-        	//var DbNumberID = clickedID[1]; //и получаем номер из массива
-        	var myData = 'tag_id='+ this.id; //выстраиваем  данные для POST
-	        //var myData = {"sub_cat_id" : $('input[name=sub_cat_id]').val(),  "_method":$('input[name=_method]').val()}; 
+	     	var myData = 'tag_id='+ this.id; //выстраиваем  данные для POST
  			$('#row_'+ this.id).fadeOut("slow");
- 			
 	        $.ajax({
 	            type: "GET", // HTTP метод  POST или GET
 	            url: "/admin/tagdel", //url-адрес, по которому будет отправлен запрос
-	            //dataType:"text", // Тип данных
 	            data:myData, //post переменные
 	            success:function(response){
-	            // в случае успеха, скрываем, выбранный пользователем для удаления, элемент
-	            //$('#row_'+ this.id).fadeOut("slow");
 	            },
 	            error:function (xhr, ajaxOptions, thrownError){
 	                //выводим ошибку
-	                alert("ошиббка!");
+	                alert(thrownError);
 	            }
 	        });
 	    });
 	});
 </script>
 <script>
-
   function ConfirmDelete()
   {
   var x = confirm('Вы уверенны. что хотите выполнить удаление?');
