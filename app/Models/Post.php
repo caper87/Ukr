@@ -26,7 +26,7 @@ class Post extends Model {
 	
 	
 	public function cat(){
-		return $this->hasMany('Ukr\Models\Cat','cat_id');
+		return $this->hasOne('Ukr\Models\Cat','cat_id');
 	}
 	
 	public function tag(){

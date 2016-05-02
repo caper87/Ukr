@@ -95,7 +95,17 @@ class PostController extends Controller
 	 
 	public function edit($id,Tag $tag,Cat $cat,SubCat $subcat)
 	{
+		$post = $this->post->query()->where('id','=',$id)->get();
 		$tag_list = $this->post->find($id)->tag; 
+		$cat_list = Cat::allCat();
+		$subcat_list = SubCat::getSubCat($post->lists('cat_id'));
+		
+		return view('admin.posts.edit',['post' => $post,'tags' => $tag_list,'cats' => $cat_list,'subcat'=>$subcat_list]);
+	}
+	/*
+	 public function edit($id,Tag $tag,Cat $cat,SubCat $subcat)
+	{
+		$tag_list = $this->post->find($id)->tag;
 		$cat_list = Cat::allCat();
 		//$cat_list = Post::find($id)->cat;
 		$post = $this->post->query()->where('id','=',$id)->get();
@@ -104,6 +114,7 @@ class PostController extends Controller
 		}
 		return view('admin.posts.edit',['post' => $post,'tags' => $tag_list,'cats' => $cat_list,'subcat'=>$subcat_list]);
 	}
+	 */
 
 	/**
 	 * Update the specified resource in storage.
